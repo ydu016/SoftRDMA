@@ -1,0 +1,32 @@
+diff --git a/librxe-dev/rxe_cfg b/librxe-dev/rxe_cfg
+index 72c3d05..5b73ddf 100755
+@@ -457,6 +457,11 @@ sub rxe_add {
+ 	print "eth_name ($eth) looks bogus\n";
+ 	return;
+     }
++	
++    if($link_state{$eth} eq "no") {
++        print "$eth: link is down\n";
++        return;
++    }
+ 
+     if (!defined($rxe_names{$eth})) {
+ 	system("echo '$eth' > $net_parms/add");
+@@ -932,7 +937,7 @@ sub main {
+     # stuff that does not require modules to be loaded
+     switch($arg1) {
+         case "help"		{ usage(); exit; }
+-        case "start"		{ do_start(); do_status(); exit; }
++        case "start"		{ do_status(); do_start(); exit; }
+         case "persistent"	{ system("cat $persistence_file"); exit; }
+     }
+ 
+@@ -955,7 +960,7 @@ sub main {
+     # Stuff that requires the ib_rxe module to be loaded
+     switch($arg1) {
+         case "stop"	{ do_stop(); 			exit; }
+-        case "restart"	{ do_stop(); do_start(); do_status(); 		exit; }
++        case "restart"	{ do_stop(); do_status(); do_start(); 		exit; }
+         case "debug"	{ do_debug($arg2);	 	exit; }
+         case "crc"	{ do_crc($arg2); 		exit; }
+         case "show"	{ do_show(); 			exit; }
