@@ -1,0 +1,12 @@
+390d389
+
+< 	__be64			tmp_prefix;
+445,451c443
+< 		if (av->attr.grh.sgid_index == 0x00) 
+< 			tmp_prefix = port->subnet_prefix;
+< 		else 
+< 			tmp_prefix = 0x0000;
+< 
+< 		grh_set_sgid(pkt, tmp_prefix,
+---
+> 		grh_set_sgid(pkt, port->subnet_prefix,

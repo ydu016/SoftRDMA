@@ -1,0 +1,54 @@
+43d42
+
+< #include <net/arp.h> //VT Debug
+234a234,245
+> 
+> /*VT debug assign the ll_addr
+> 	* (ll_addr+0)=0x01;
+> 	* (ll_addr+1)=0x00;
+> 	* (ll_addr+2)=0x5e;
+> 	* (ll_addr+3)=0x5e;
+> 	* (ll_addr+4)=0x01;
+> 	* (ll_addr+5)=0x02;
+> */
+> 
+> //	* (long *) ll_addr = 0xffff02015e5e0001;
+> 
+305c316,317
+
+< 	return rxe->port[0].guid_tbl[0]
+---
+> 	int port_num = 1;
+> 	return rxe->port[port_num - 1].guid_tbl[0]
+369,376c381,382
+
+< 		struct neighbour *neigh = NULL;
+< 		__be32 ip;
+< 		__be32 temp0 = (__be32)(rxe->port[0].guid_tbl[1]>>32);
+< 		__be32 temp1 = *(__be32 *)(in6->s6_addr+12);
+< 		if(temp0 == temp1) {
+< 			printk("VT debug loopback\n");
+< 			memcpy(av->ll_addr, rxe->ndev->dev_addr, 6);
+< 		}
+---
+> 		int i;
+> 		char addr[64];
+378,387c384,389
+
+< 		ip = *(__be32 *)(in6->s6_addr+12);
+< 		
+< 		neigh = neigh_lookup(&arp_tbl, &ip, rxe->ndev);
+< 				
+< 		if(neigh == NULL) { 
+< 			printk("VT debug: neighbor ip2mac not found\n");
+< 			return -EINVAL;
+< 		} else {
+< 			memcpy(av->ll_addr, neigh->ha, 6);
+< 		}
+---
+> 		for (i = 0; i < 16; i++)
+> 			sprintf(addr+2*i, "%02x", attr->grh.dgid.raw[i]);
+> 
+> 		pr_info("rxe_net: non local subnet address not supported %s\n",
+> 			addr);
+> 		return -EINVAL;
