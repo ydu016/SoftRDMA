@@ -1,0 +1,42 @@
+812,847d810
+< static inline int rxe_link_ip_guid(struct in6_addr *in6) 
+< {
+< 	int i,j;
+< 	for(i=0, j=0; i < 10; i++) 
+< 		j &= in6->s6_addr[i];
+< 	return (!j) && ((in6->s6_addr[10] & in6->s6_addr[11]) == 0xff);
+< } 
+< 
+< int rxe_ip_get_ll_mac(struct in6_addr * in6, uint8_t * ll_addr) 
+< {
+< 	int ip[4];
+< 	uint8_t mac[6];
+< 	char header[1024];
+< 
+< 	FILE *arpCache = fopen("/proc/net/arp", "r");
+< 	if (!arpCache) {
+< 		printf("Arp Cache: Failed to open file\n");
+< 		return -1;
+< 	}
+< 
+< 	if (!fgets(header, sizeof(header), arpCache)) {
+< 		return -1;
+< 	}
+< 
+< 	while (10 == fscanf(arpCache, "%d.%d.%d.%d %*s %*s %x:%x:%x:%x:%x:%x %*s %*s", 
+< 				ip,ip+1,ip+2,ip+3, mac,mac+1,mac+2,mac+3,mac+4,mac+5)) {
+< 		printf("%d %d %d %d\n", ip[0], ip[1] ,ip[2] ,ip[3]);
+< 		if (in6->s6_addr[12] == ip[0] && in6->s6_addr[13] == ip[1] &&
+< 			in6->s6_addr[14] == ip[2] && in6->s6_addr[15] == ip[3]) {
+< 			printf("%x %x %x %x %x %x\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+< 			memcpy(ll_addr, mac, sizeof mac);
+< 		}
+< 	}
+< 	return 0;
+< }
+< 
+853d815
+< 	int i;
+868,876c828
+< 	} else if (rxe_link_ip_guid(in6)) {
+< 		rxe_ip_get_ll_mac(in6,av->ll_addr);
